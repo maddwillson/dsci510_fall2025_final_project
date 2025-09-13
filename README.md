@@ -1,2 +1,2 @@
 # dsci510_fall2025_final_project
-Final project for DSCI 510
+This a dsci510 fall2025 final project
