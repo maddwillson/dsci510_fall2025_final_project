@@ -1,5 +1,10 @@
 yfinance
 pandas
-python-dotenv
+dotenv
+dotenv
 os
 datetime
+json
+time
+load 
+config
