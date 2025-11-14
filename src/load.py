@@ -1,4 +1,4 @@
-"""
+
 ### YFINANCE
 import yfinance as yf
 import pandas as pd
@@ -20,7 +20,7 @@ def load_yf_data(ticker="IBM", period="2y"):
 
     return df
 
-"""
+
 
 
 
@@ -50,7 +50,6 @@ from time import sleep
 from config import (
     NYT_API_KEY,
     NYT_RATE_LIMIT_SLEEP,
-    NYT_DAILY_LIMIT,
     NYT_PAGE_LIMIT,
 )
 
@@ -61,7 +60,6 @@ def get_nyt_page(query, begin_date, end_date, page):
     params = {
         "api-key": NYT_API_KEY,
         "q": query,                                
-        "fq": f'headline:("{query}")',             
         "begin_date": begin_date,                  
         "end_date": end_date,
         "page": page                              
@@ -69,7 +67,7 @@ def get_nyt_page(query, begin_date, end_date, page):
 
     
     response = requests.get(BASE_URL, params=params, timeout=30)
-    
+
     # Error Handling
     if response.status_code == 429:
         raise RuntimeError("NYT rate limit hit ")
@@ -100,8 +98,9 @@ def get_nyt_articles(query, start_date, end_date, max_requests):
 
         # get article info
         try:
-            page_docs = data["response"]["docs"]
-            meta = data["response"]["meta"]
+            response = data.get("response", {})
+            page_docs = response.get("docs") or []
+            meta = response.get("metadata", {})
         except Exception as e:
             print(f"Invalid NYT response: {e}")
             break
@@ -112,9 +111,9 @@ def get_nyt_articles(query, start_date, end_date, max_requests):
 
         docs.extend(page_docs)
 
-        hits = meta.get("hits", None)
+        hits = meta.get("hits", 0)
         # safety stop one page before hitting limit
-        if (page + 1) * 10 >= (hits or 0):
+        if (page + 1) * 10 >= hits:
             break
 
         sleep(NYT_RATE_LIMIT_SLEEP)

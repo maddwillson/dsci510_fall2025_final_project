@@ -1,4 +1,4 @@
-from load import load_yf_data, get_nyt_articles
+from load import get_nyt_articles#, load_yf_data
 import pandas as pd
 import yfinance as yf
 import json
@@ -7,13 +7,19 @@ from config import NYT_DAILY_LIMIT
 
 
 if __name__ == "__main__":
-    """
     # YFINANCE
     yf_df = load_yf_data()
 
     #download if needed
     #yf_df.to_csv("yf_df.csv", index=False)
-    """
+
+
+
+
+
+
+
+
 
     # GOOGLE
     """
@@ -24,21 +30,26 @@ if __name__ == "__main__":
 
 
 
+
+
+
     # NYT
     query = "IBM"  # choose any keyword
-    start = datetime(2024, 1, 1)
-    end = datetime(2024, 1, 5)
+
+    # define range (2 years gave 227 articles)
+    start = datetime(2023, 11, 14)
+    end = datetime(2025, 11, 13)
 
     # get articles
     articles = get_nyt_articles(
         query=query,
         start_date=start,
         end_date=end,
-        max_requests=NYT_DAILY_LIMIT
+        max_requests= 50 #NYT_DAILY_LIMIT
     )
 
     # save data
-    output_file = "nyt_raw_articles.json"
+    output_file = "nyt_raw_articles.json" 
     with open(output_file, "w") as f:
         json.dump(articles, f, indent=2)
 

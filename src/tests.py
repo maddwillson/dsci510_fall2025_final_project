@@ -1,10 +1,10 @@
-from load import load_yf_data, get_nyt_articles
+from load import get_nyt_articles#, load_yf_data
 import pandas as pd
 import yfinance as yf
 from datetime import datetime
 
 if __name__ == "__main__":
-    """
+    
     # YFINANCE
     print("YFINANCE LOAD TESTS...")
 
@@ -37,29 +37,43 @@ if __name__ == "__main__":
     except Exception as e:
         print("\n[PASS] Correctly raised: {e}")
     
-    """
+    
+
+
+
+
+    
 
     # GOOGLE
     """
     to be implemented 
     """ 
     
+
+
+
+
+
+
+
+
     # NYT
     print("\nNYT API LOAD TEST...")
-
-    try:
+    articles = None
+    try: # sucessfully found 12 articles in this range
         articles = get_nyt_articles(
-            query="climate",
-            start_date=datetime(2024, 1, 1),
-            end_date=datetime(2024, 1, 2),
-            max_requests=2,        # extremely small test run
+            query="IBM",
+            start_date=datetime(2025, 1, 9),
+            end_date=datetime(2025, 3, 10),
+            max_requests=2,        
         )
 
-        print(f"[PASS] Articles returned: {len(articles)}")
-
+        if len(articles) > 0:
+            print(f"[PASS] Articles returned: {len(articles)}")
+        else:
+            print("No articles returned.")
     except Exception as e:
         raise RuntimeError(f"[FAIL] Failed NYT API test: {e}")
-
 
     
 
