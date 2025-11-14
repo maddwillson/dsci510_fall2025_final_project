@@ -1,2 +1,5 @@
 yfinance
 pandas
+python-dotenv
+os
+datetime
