@@ -1,10 +1,7 @@
 yfinance
 pandas
 dotenv
-dotenv
 os
 datetime
 json
 time
-load 
-config
