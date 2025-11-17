@@ -1,7 +1,12 @@
 # Description
-
+This project aims to build a machine learning model that predicts IBM’s stock price using Google search interest and sentiment from New York Times (NYT) articles.
 
 # Data Sources
+I collected historical IBM stock data using the Ticker.history() method from the yfinance library and saved the resulting DataFrame as a CSV file. 
+
+Also, I obtained article data on IBM from the NYT Article Search API, which returns detailed JSON documents. A typical entry includes fields such as abstract, headline, keywords, pub_date, and web_url, along with relevant metadata about the article’s content and publication context. The New York Times Article Search API allows data to be searched for by keywords and filtered using parameters such as date ranges. It returns structured JSON objects for each article, which include metadata, headlines, abstracts, and publication details.
+
+Finally I collected data of Google search trends using the pytrends library. 
 
 
 # Results
