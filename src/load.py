@@ -25,20 +25,56 @@ def load_yf_data(ticker="IBM", period="2y"):
 
 
 
+
+
+
+
 ### Google Trends Data
-"""
-Will implement here
-"""
+import time
+from pytrends.request import TrendReq
+
+def load_google_data(kw_list = ["IBM"], 
+                     start_date = '2023-11-14', 
+                     end_date = '2025-11-14', 
+                     tz=360):
+     
+    
+    if len(kw_list) > 5:
+        raise ValueError("kw_list must be 5 or less key words") 
+    
+     # Add a realistic browser header so Google does not block you
+    headers = {
+        "User-Agent":
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/120.0.0.0 Safari/537.36"
+    }
+    
+    pytrends = TrendReq(hl='en-US', 
+                    tz=tz, # tz: timezone offset (360 is US CST) 
+                    timeout=(10,25), 
+                    retries=3, 
+                    backoff_factor=0.4,
+                    requests_args={"headers": headers}
+                    ) 
+    time.sleep(8) 
+
+    # Build request payload
+    pytrends.build_payload(kw_list, 
+                           cat=0, 
+                           timeframe=f'{start_date} {end_date}', 
+                           geo='US', 
+                           gprop='')
+    time.sleep(8) 
+    # return df of historical data for when the keyword was searched most
+    return pytrends.interest_over_time()
 
 
 
 
 
 
-
-
-
-
+''''''
 
 
 ### NYT ARTICLE DATA
@@ -76,7 +112,7 @@ def get_nyt_page(query, begin_date, end_date, page):
     return response.json()
 
 
-def get_nyt_articles(query, start_date, end_date, max_requests):
+def load_nyt_data(query, start_date, end_date, max_requests):
     docs = [] # store articles here
     request_count = 0
 
@@ -119,7 +155,3 @@ def get_nyt_articles(query, start_date, end_date, max_requests):
         sleep(NYT_RATE_LIMIT_SLEEP)
 
     return docs
-
-
-
-

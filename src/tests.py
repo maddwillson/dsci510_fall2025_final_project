@@ -1,4 +1,4 @@
-from load import get_nyt_articles#, load_yf_data
+from load import load_nyt_data#, load_yf_data
 import pandas as pd
 import yfinance as yf
 from datetime import datetime
@@ -61,7 +61,7 @@ if __name__ == "__main__":
     print("\nNYT API LOAD TEST...")
     articles = None
     try: # sucessfully found 12 articles in this range
-        articles = get_nyt_articles(
+        articles = load_nyt_data(
             query="IBM",
             start_date=datetime(2025, 1, 9),
             end_date=datetime(2025, 3, 10),
