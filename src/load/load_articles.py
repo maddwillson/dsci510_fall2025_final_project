@@ -17,13 +17,15 @@ from config import (
     END_DATE,
 )
 
+#Set Up
+BASE_URL = "https://api.nytimes.com/svc/search/v2/articlesearch.json"
+QUERY = "IBM"  # can be any keyword
 
-
-def get_nyt_page(page, query, begin_date, end_date):
+def get_nyt_page(query, start_date, end_date, page):
     params = {
         "api-key": NYT_API_KEY,
         "q": query,                                
-        "begin_date": begin_date,                  
+        "begin_date": start_date,                  
         "end_date": end_date,
         "page": page                              
     }
@@ -85,16 +87,18 @@ def load_nyt_data(query, start_date, end_date, max_requests):
 
 
 
-#Set Up
-BASE_URL = "https://api.nytimes.com/svc/search/v2/articlesearch.json"
-QUERY = "IBM"  # can be any keyword
+
+
+
+
+
 
 # get articles
 articles = load_nyt_data(
     query=QUERY,
-    f=START_DATE,
+    start_date=START_DATE,
     end_date=END_DATE,
-    max_requests= 5 #5 for testing, NYT_DAILY_LIMIT is actually  500
+    max_requests= NYT_DAILY_LIMIT,
 )
 
 # save data
@@ -102,5 +106,8 @@ output_path = Path("data/raw/nyt_data.json")
 with open(output_path, "w") as f:
     json.dump(articles, f, indent=2)
 
-# dispaly first five rows
-print(pd.json_normalize(articles[:5]).head())
+# Print preview
+if len(articles) > 0:
+    print(pd.json_normalize(articles[:5]).head())
+else:
+    print("No articles returned.")

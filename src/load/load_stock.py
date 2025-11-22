@@ -3,13 +3,15 @@
 import yfinance as yf
 import pandas as pd
 from datetime import datetime
+from pathlib import Path
 
-from config import QUERY
 
-def load_yf_data(ticker=QUERY, period="5y"):
+from config import START_DATE, END_DATE
+
+def load_yf_data(ticker="IBM"):
     try:
         tick = yf.Ticker(ticker) # set ticker object
-        df = tick.history(period=period) # historical data as pandas df
+        df = tick.history(start=START_DATE, end=END_DATE) # historical data as pandas df
     except Exception as e:
         raise ConnectionError(f"Failed to fetch data for {ticker}: {e}")
     
