@@ -1,15 +1,16 @@
-# 5 years
-START_DATE = datetime.today().strftime("%Y%m%d")
-END_DATE = datetime(TODAY.year - 5, TODAY.month, TODAY.day).strftime("%Y%m%d")
-
-
-
-## NYT CONFIG
 from dotenv import load_dotenv
 import os
 from datetime import datetime
 
-# get NYT api key from .env
+
+
+# DATE CONFIG (past 5 years)
+TODAY = datetime.today()
+START_DATE = datetime(TODAY.year - 5, TODAY.month, TODAY.day).strftime("%Y%m%d")
+END_DATE = TODAY.strftime("%Y%m%d")
+
+
+## NYT CONFIG
 load_dotenv()
 NYT_API_KEY = os.getenv("NYT_API_KEY")
 
