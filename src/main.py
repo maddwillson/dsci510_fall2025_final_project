@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
 
 
-    '''
+    
 
     # NYT
     query = "IBM"  # choose any keyword
@@ -54,6 +54,6 @@ if __name__ == "__main__":
     output_file = "nyt_raw_articles.json" 
     with open(output_file, "w") as f:
         json.dump(articles, f, indent=2)
-    '''
+    
 
         
