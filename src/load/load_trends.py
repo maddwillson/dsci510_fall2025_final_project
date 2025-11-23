@@ -2,16 +2,17 @@
 import time
 from pytrends.request import TrendReq
 from pathlib import Path
-from utils import yyyymmdd_to_ymd
-from config import (
-    START_DATE,
-    END_DATE,
-)
+from src.config import START_DATE, END_DATE
+
+
 
 # format dates for google trends
-START = yyyymmdd_to_ymd(START_DATE)
-END = yyyymmdd_to_ymd(END_DATE)
+def format_date(yyyymmdd):
+    return f"{yyyymmdd[:4]}-{yyyymmdd[4:6]}-{yyyymmdd[6:]}"
 
+
+START = format_date(START_DATE)
+END = format_date(END_DATE)
 
 def load_google_data(kw_list = ["IBM"], 
                      start_date = START, 
@@ -44,9 +45,14 @@ def load_google_data(kw_list = ["IBM"],
                            timeframe=f'{start_date} {end_date}', 
                            geo='US', 
                            gprop='')
+    
     time.sleep(8) 
+
     # return df of historical data for when the keyword was searched most
-    return pytrends.interest_over_time()
+    df = pytrends.interest_over_time()
+    if df.empty:
+        raise ValueError("Google Trends returned an empty DataFrame")
+    return df
 
 
 
@@ -57,9 +63,15 @@ def load_google_data(kw_list = ["IBM"],
 
 
 # RUN GOOGLE LOAD
-google_df = load_google_data(kw_list = ["IBM"], tz=360)
+if __name__ == "__main__":
+    google_df = load_google_data(["IBM"], tz=360)
 
-# save 
-google_df.to_csv("data/raw/google_df.csv", index=True)  # keep index for dates
+    # Always save to project/data/raw/google_df.csv
+    PROJECT_ROOT = Path(__file__).resolve().parents[2]
+    OUTPUT_PATH = PROJECT_ROOT / "data" / "raw" / "google_df.csv"
 
+    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+    google_df.to_csv("data/raw/google_df.csv", index=True)  # keep index for dates
+    print(f"Saved Google Trends data to: {OUTPUT_PATH}")
 

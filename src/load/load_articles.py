@@ -8,7 +8,7 @@ import pandas as pd
 from pathlib import Path
 
 
-from config import (
+from src.config import (
     NYT_API_KEY,
     NYT_DAILY_LIMIT,
     NYT_RATE_LIMIT_SLEEP,
@@ -64,7 +64,7 @@ def load_nyt_data(query, start_date, end_date, max_requests):
         # get article info
         try:
             response = data.get("response", {})
-            page_docs = response.get("docs") or [] # maybe remove or [] ????
+            page_docs = response.get("docs") or [] 
             meta = response.get("meta", {}) # was metadata
         except Exception as e:
             print(f"Invalid NYT response: {e}")
@@ -76,10 +76,10 @@ def load_nyt_data(query, start_date, end_date, max_requests):
 
         docs.extend(page_docs)
 
-        hits = meta.get("hits", 0)
+        #hits = meta.get("hits", 0)
         # safety stop one page before hitting the limit
-        if (page + 1) * 10 >= hits:
-            break
+        #if (page + 1) * 10 >= hits:
+        #    break
 
         sleep(NYT_RATE_LIMIT_SLEEP)
 
