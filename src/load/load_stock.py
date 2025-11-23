@@ -31,12 +31,16 @@ def load_yf_data(ticker="IBM"):
 
 
 
+if __name__ == "__main__":
+    ##### RUN YFINANCE
+    yf_df = load_yf_data()
 
-##### RUN YFINANCE
-yf_df = load_yf_data()
+    output_path = "./data/raw/yf_df.csv"
 
-# Save raw file
-yf_df.to_csv("./data/raw/yf_df.csv", index=False)
-print(yf_df.head(1))
-print("\n")
-print(yf_df.tail(1))
+    # Save raw file
+    yf_df.to_csv(output_path, index=False)
+    print(f"Saved YFINANCE Stock data to: {output_path}")
+
+    print(yf_df.head(1))
+    print("\n")
+    print(yf_df.tail(1))

@@ -92,22 +92,25 @@ def load_nyt_data(query, start_date, end_date, max_requests):
 
 
 
+if __name__ == "__main__":
+    # get articles
+    articles = load_nyt_data(
+        query=QUERY,
+        start_date=START_DATE,
+        end_date=END_DATE,
+        max_requests= NYT_DAILY_LIMIT,
+    )
 
-# get articles
-articles = load_nyt_data(
-    query=QUERY,
-    start_date=START_DATE,
-    end_date=END_DATE,
-    max_requests= NYT_DAILY_LIMIT,
-)
+    # save data
+    output_path = Path("data/raw/nyt_data.json") 
+    with open(output_path, "w") as f:
+        json.dump(articles, f, indent=2)
 
-# save data
-output_path = Path("data/raw/nyt_data.json") 
-with open(output_path, "w") as f:
-    json.dump(articles, f, indent=2)
+    # Print preview
+    if len(articles) > 0:
+        print(pd.json_normalize(articles[:5]).head())
+        print(f"Saved NYT Articles data to: {output_path}")
 
-# Print preview
-if len(articles) > 0:
-    print(pd.json_normalize(articles[:5]).head())
-else:
-    print("No articles returned.")
+    else:
+        print("No articles returned.")
+

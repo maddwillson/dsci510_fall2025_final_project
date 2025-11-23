@@ -69,8 +69,8 @@ if __name__ == "__main__":
     google_df = load_google_data(["IBM"], start_date=START, end_date=END, tz=360)
 
     PROJECT_ROOT = Path(__file__).resolve().parents[2]
-    OUTPUT_PATH = PROJECT_ROOT / "data" / "raw" / "google_df.csv"
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    output_path = PROJECT_ROOT / "data" / "raw" / "google_df.csv"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    google_df.to_csv(OUTPUT_PATH, index=True)
-    print(f"Saved Google Trends DAILY data to: {OUTPUT_PATH}")
+    google_df.to_csv(output_path, index=True)
+    print(f"Saved Google Trends data to: {output_path}")
