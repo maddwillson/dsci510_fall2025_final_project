@@ -6,3 +6,4 @@ datetime
 json
 time
 pytrends
+vaderSentiment
