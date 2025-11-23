@@ -16,8 +16,12 @@ def clean_trends_data(df: pd.DataFrame) -> pd.DataFrame:
     # Drop rows with empty values
     df = df.dropna()
 
+    # Rename first column to "Date"
+    first_col = df.columns[0]
+    df = df.rename(columns={first_col: "Date"})
+
     # Rename second column to "interest"
-    df = df.rename(columns={second_col: "interest"})
+    df = df.rename(columns={second_col: "Interest"})
 
     # Reset index for cleanliness
     df = df.reset_index(drop=True)
