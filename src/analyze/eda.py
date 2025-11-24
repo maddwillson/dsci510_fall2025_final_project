@@ -85,7 +85,7 @@ plt.close()
 
 
 
-# Pairplot for relationshiops
+# Pairplot for relationships
 sns.pairplot(df[['Return', 'Return_lag', 'Return_3d', 'Return_7d', 'Volatility_7d', 
                  'Interest', 'Interest_lag', 'Sentiment', 'Prev_sentiment']])
 #plt.show()
