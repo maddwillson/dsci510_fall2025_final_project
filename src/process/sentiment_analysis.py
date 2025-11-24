@@ -1,56 +1,30 @@
 import pandas as pd
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-from pathlib import Path
 
+# Columns that need sentiment scores
 text_cols = ["Headline", "Abstract", "Snippet"]
 
 def compute_sentiments(nyt_clean_path=f"data/processed/nyt_clean.csv"):
+    # Load data
     df = pd.read_csv(nyt_clean_path, parse_dates=["Date"])
     analyzer = SentimentIntensityAnalyzer()
 
+    # Helper for sentiment score
+    def get_compound(text):
+        if pd.isna(text):
+            return None
+        return analyzer.polarity_scores(str(text))["compound"]
 
-    # Sentiment extraction helper
-    def get_sentiment_dict(text):
-
-        # handle NaN/None values
-        if not isinstance(text, str):
-            text = ""
-        s = analyzer.polarity_scores(text)
-        return {
-            "pos": s["pos"],
-            "neg": s["neg"],
-            "neu": s["neu"],
-            "compound": s["compound"],
-        }
-
-    # Sentiment Analysis for each text field 
+    # Sentiment Analysis for each column 
     for col in text_cols:
-        sentiment_output = df[col].apply(get_sentiment_dict).apply(pd.Series)
-        sentiment_output = sentiment_output.add_prefix(f"{col}_")
-        df = pd.concat([df, sentiment_output], axis=1)
-
-    # Aggregate articles by day
-    agg_dict = {}
-
-    # Make Columns
-    for col in text_cols:
-        prefix = col + "_"
-        agg_dict[prefix + "pos"] = "mean"
-        agg_dict[prefix + "neg"] = "mean"
-        agg_dict[prefix + "neu"] = "mean"
-        agg_dict[prefix + "compound"] = ["mean", "median"]
-
-    # Add article count column
-    df["Count"] = 1 # initalize
-    daily = df.groupby("Date").agg(agg_dict)
-    daily.columns = ["_".join(col).strip() for col in daily.columns] 
-    daily["Article_Count"] = df.groupby("Date")["Count"].sum() # get counts
-
-    # Sort by date
-    daily = daily.reset_index().sort_values("Date")
+        df[col + "_Sentiment"] = df[col].apply(get_compound)
+    
+    
+    sentiment = df.groupby("Date")[[col + "_Sentiment" for col in text_cols]].mean().reset_index()
 
 
-    return daily
+    return sentiment
+
 
 
 if __name__ == "__main__":
