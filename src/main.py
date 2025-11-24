@@ -89,7 +89,7 @@ def sentiment_analysis():
 
 
 if __name__ == "__main__":
-    load()
+    #load() (commented out to avoid API overuse)
     clean()
     sentiment_analysis()
     merge_data()
