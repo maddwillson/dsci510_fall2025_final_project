@@ -48,6 +48,12 @@ def merge_data():
     merged = yf.merge(google, on="Date", how="inner")
     merged = merged.merge(nyt, on="Date", how="inner")
 
+    # Columns representing sentiment
+    sent_cols = ["Headline_Sentiment", "Abstract_Sentiment", "Snippet_Sentiment"]
+    
+    # Drop rows where all sentiment columns are NaN (no articles that day)
+    merged = merged.dropna()
+
     # Save to ibm_df
     merged.to_csv("data/final/ibm_df.csv", index=False)
     print(f"Saved merged dataset with {len(merged)} rows → ibm_df.csv")
