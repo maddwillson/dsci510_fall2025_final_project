@@ -1,0 +1,90 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.graph_objects as go
+from pathlib import Path
+
+# Plot settings
+sns.set(style="whitegrid", palette="muted")
+plt.rcParams['figure.figsize'] = (12,6)
+
+# Get path
+data_path = Path(__file__).parent.parent.parent / "data/final/ibm_df.csv"  # relative to src/ folder
+results_path = Path(__file__).parent.parent.parent / "results"
+
+# Load data
+df = pd.read_csv(data_path, parse_dates=["Date"])
+print("\nData Preview:\n", df.head(2))
+
+# Shape
+rows, cols = df.shape
+print(f"Dataset Shape: Rows={rows:,}, Columns={cols}")
+
+
+# Columns
+print(df.columns.tolist())
+
+# Missing Values (should all be 0)
+print("\nMissing values:\n", df.isna().sum())
+
+# Summary Stats
+print("\nSummary Stats:\n",df.describe())
+
+
+
+# Distributions of variables 
+variables = ['Close', 'Volume', 'Return', 'Interest', 'Sentiment']
+plt.figure(figsize=(15,10))
+for i, var in enumerate(variables, 1):
+    plt.subplot(3,2,i)
+    sns.histplot(df[var], kde=True, bins=30)
+    plt.title(f'Distribution of {var}')
+plt.tight_layout()
+#plt.show()
+plt.savefig("results/variable_distributions.png")
+
+
+# Correlation heatmap
+plt.figure(figsize=(8, 6))
+sns.heatmap(df[['Return', 'Interest', 'Sentiment']].corr(), 
+            annot=True, cmap='coolwarm', vmin=-1, vmax=1)
+plt.title("Correlation Heatmap")
+#plt.show()
+plt.savefig("results/correlation_heatmap.png")
+
+
+# Explore Interest and Sentiment Shapes
+plt.figure(figsize=(12,5))
+plt.subplot(1,2,1)  # Return vs Google Interest
+sns.scatterplot(x='Interest', y='Return', data=df)
+plt.title('Stock Return vs Google Interest')
+plt.subplot(1,2,2)  # Return vs NYT Sentiment
+sns.scatterplot(x='Sentiment', y='Return', data=df)
+plt.title('Stock Return vs NYT Sentiment')
+plt.tight_layout()
+#plt.show()
+plt.savefig("results/return_vs.png")
+
+
+# Time Series Plot
+def scale_series(series, new_min=-0.05, new_max=0.05):
+    s_min = series.min()
+    s_max = series.max()
+    return (series - s_min) / (s_max - s_min) * (new_max - new_min) + new_min
+# Apply scaling to Return, Interest, Sentiment
+df['Return_scaled'] = scale_series(df['Return'])
+df['Interest_scaled'] = scale_series(df['Interest'])
+df['Sentiment_scaled'] = scale_series(df['Sentiment'])
+# Plot scaled series
+plt.figure(figsize=(12,5))
+plt.plot(df['Date'], df['Return_scaled'], label='Return', color='blue')
+plt.plot(df['Date'], df['Interest_scaled'], label='Interest', color='green')
+plt.plot(df['Date'], df['Sentiment_scaled'], label='Sentiment', color='red')
+plt.title("Scaled Return, Interest, & Sentiment (Range -0.05 to 0.05)")
+plt.xlabel("Date")
+plt.ylabel("Scaled Value")
+plt.legend()
+plt.tight_layout()
+#plt.show()
+plt.savefig("results/time_series.png")
