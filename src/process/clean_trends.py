@@ -24,7 +24,7 @@ def clean_trends_data(df: pd.DataFrame) -> pd.DataFrame:
     df = df.rename(columns={second_col: "Interest"})
 
     # Normalize interest from -1 to 1
-    df['Interest_Norm'] = 2 * ((df['Interest'] - df['Interest'].min()) /
+    df['Interest'] = 2 * ((df['Interest'] - df['Interest'].min()) /
                             (df['Interest'].max() - df['Interest'].min())) - 1
 
     # Reset index for cleanliness

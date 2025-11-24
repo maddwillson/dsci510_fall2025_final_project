@@ -1,38 +1,46 @@
 import pandas as pd
 
-# Load stock data CSV into a DataFrame
 def load_stock_data_csv(filepath: str) -> pd.DataFrame:
-    df = pd.read_csv(filepath, parse_dates=['Date'])
-
-    # Ensure 'Date' is datetime type
-    df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
     
+    # remove IBM suffix
+    df_raw = pd.read_csv(filepath)
+    df_raw.columns = [col.replace(' IBM', '') for col in df_raw.columns]
+
+    # load with date parsing
+    df = pd.read_csv(filepath, parse_dates=['Date'], dayfirst=False)
+    
+    # remove IBM suffix in parsed df too
+    df.columns = [col.replace(' IBM', '') for col in df.columns]
+
+    df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+
+    df = df.dropna(subset=['Date'])
+
+    # Normalize date
+    df['Date'] = df['Date'].dt.normalize()
+
+    df = df.sort_values('Date')
     return df
+
 
 def clean_stock_data(df: pd.DataFrame) -> pd.DataFrame:
     # Keep only relevant columns
-    df = df[['Date', 'Open', 'High', 'Low', 'Close', 'Volume']]
-
-    # Drop rows missing critical info
-    df = df.dropna(subset=['Date', 'Close'])
+    df = df[['Date', 'Close', 'Volume']].copy() # avoid SettingWithCopyWarning
 
     # Ensure price columns are numeric
-    price_cols = ['Open', 'High', 'Low', 'Close']
-    for col in price_cols:
-        if col in df.columns:
-            df[col] = pd.to_numeric(df[col], errors='coerce')
-    
-    # Remove rows with missing or negative prices
-    df = df.dropna(subset=price_cols)
-    df = df[(df[price_cols] >= 0).all(axis=1)]
+    df['Close'] = pd.to_numeric(df['Close'], errors='coerce')
+    df['Volume'] = pd.to_numeric(df['Volume'], errors='coerce')
 
-    # clean volume column
-    if 'Volume' in df.columns:
-        df['Volume'] = pd.to_numeric(df['Volume'], errors='coerce').fillna(0).astype(int)
-        df = df[df['Volume'] >= 0]
+    # Drop rows with no close
+    df = df.dropna(subset=['Close'])
 
-    # Remove time and timezone info from Date, keep only YYYY-MM-DD
-    df['Date'] = df['Date'].dt.date
+    # Remove negative prices
+    df = df[df['Close'] >= 0]
+
+
+    df = df.sort_values('Date')
+    # Compute daily return  
+    df['Return'] = df['Close'].pct_change()  
 
     # Reset index for cleanliness
     df = df.reset_index(drop=True)
