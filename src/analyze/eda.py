@@ -34,24 +34,30 @@ print("\nSummary Stats:\n",df.describe())
 
 
 # Distributions of variables 
-variables = ['Close', 'Volume', 'Return', 'Interest', 'Sentiment']
-plt.figure(figsize=(15,10))
+variables = ['Close', 'Volume', 'Return', 'Return_lag', 'Return_3d', 'Return_7d',
+             'Volatility_3d', 'Volatility_7d', 'Interest', 'Interest_lag', 'Sentiment', 'Prev_sentiment']
+plt.figure(figsize=(20,15))
 for i, var in enumerate(variables, 1):
-    plt.subplot(3,2,i)
+    plt.subplot(4,3,i)
     sns.histplot(df[var], kde=True, bins=30)
     plt.title(f'Distribution of {var}')
 plt.tight_layout()
 #plt.show()
-plt.savefig("results/variable_distributions.png")
+plt.savefig(results_path / "variable_distributions.png")
+plt.close()
 
 
 # Correlation heatmap
-plt.figure(figsize=(8, 6))
-sns.heatmap(df[['Return', 'Interest', 'Sentiment']].corr(), 
-            annot=True, cmap='coolwarm', vmin=-1, vmax=1)
+numeric_vars = ['Return', 'Return_lag', 'Return_3d', 'Return_7d',
+                'Volatility_3d', 'Volatility_7d', 'Interest', 'Interest_lag', 
+                'Sentiment', 'Prev_sentiment']
+plt.figure(figsize=(10,8))
+sns.heatmap(df[numeric_vars].corr(), annot=True, cmap='coolwarm', vmin=-1, vmax=1)
 plt.title("Correlation Heatmap")
 #plt.show()
-plt.savefig("results/correlation_heatmap.png")
+plt.savefig(results_path / "corr_heatmap.png")
+plt.close()
+
 
 
 # Explore Interest and Sentiment Shapes
@@ -64,28 +70,53 @@ sns.scatterplot(x='Sentiment', y='Return', data=df)
 plt.title('Stock Return vs NYT Sentiment')
 plt.tight_layout()
 #plt.show()
-plt.savefig("results/return_vs.png")
+plt.savefig(results_path / "interest_sentiment_scatter.png")
+plt.close()
 
 
-# Time Series Plot
+# Day of the Week Analysis
+plt.figure(figsize=(10,6))
+sns.boxplot(x='DayOfWeek', y='Return', data=df,
+            order=['Monday','Tuesday','Wednesday','Thursday','Friday'])
+plt.title("Return Distribution by Day of Week")
+#plt.show()
+plt.savefig(results_path / "return_by_dayofweek.png")
+plt.close()
+
+
+
+# Pairplot for relationshiops
+sns.pairplot(df[['Return', 'Return_lag', 'Return_3d', 'Return_7d', 'Volatility_7d', 
+                 'Interest', 'Interest_lag', 'Sentiment', 'Prev_sentiment']])
+#plt.show()
+plt.savefig(results_path / "pairplot.png")
+plt.close()
+
+
+
+
+
+# Scale series for time series plotting
 def scale_series(series, new_min=-0.05, new_max=0.05):
     s_min = series.min()
     s_max = series.max()
     return (series - s_min) / (s_max - s_min) * (new_max - new_min) + new_min
-# Apply scaling to Return, Interest, Sentiment
+
 df['Return_scaled'] = scale_series(df['Return'])
 df['Interest_scaled'] = scale_series(df['Interest'])
 df['Sentiment_scaled'] = scale_series(df['Sentiment'])
-# Plot scaled series
-plt.figure(figsize=(12,5))
-plt.plot(df['Date'], df['Return_scaled'], label='Return', color='blue')
-plt.plot(df['Date'], df['Interest_scaled'], label='Interest', color='green')
-plt.plot(df['Date'], df['Sentiment_scaled'], label='Sentiment', color='red')
-plt.title("Scaled Return, Interest, & Sentiment (Range -0.05 to 0.05)")
+
+# Time Series Plot
+df_to_plot = ['Return_scaled', 'Return_3d', 'Return_7d', 'Volatility_7d', 'Interest_scaled', 'Sentiment_scaled']
+plt.figure(figsize=(14,6))
+for col in df_to_plot:
+    plt.plot(df['Date'], df.get(col, df[col]), label=col)
+plt.title("Scaled Time Series of Returns, Volatility, Interest & Sentiment")
 plt.xlabel("Date")
 plt.ylabel("Scaled Value")
 plt.legend()
 plt.tight_layout()
 #plt.show()
-plt.savefig("results/time_series.png")
+plt.savefig(results_path / "time_series.png")
 plt.close()
+
