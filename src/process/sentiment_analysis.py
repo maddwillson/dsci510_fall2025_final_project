@@ -2,7 +2,7 @@ import pandas as pd
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 
-def compute_sentiments(nyt_clean_path=f"data/processed/nyt_clean.csv"):
+def compute_sentiments(nyt_clean_path="data/processed/nyt_clean.csv"):
     # Load data
     df = pd.read_csv(nyt_clean_path, parse_dates=["Date"])
     analyzer = SentimentIntensityAnalyzer()
@@ -15,15 +15,21 @@ def compute_sentiments(nyt_clean_path=f"data/processed/nyt_clean.csv"):
     # Average for each day (for when multiple in a day)
     sentiment = df.groupby("Date")[["Sentiment"]].mean().reset_index()
 
-    return sentiment
+    # Feature Engineering
+    sentiment = sentiment.sort_values("Date")
+    sentiment["Prev_sentiment"] = sentiment["Sentiment"].shift(1)     # prev sentiment
+    sentiment["Days_since_prev"] = sentiment["Date"].diff().dt.days   # find days since prev article
+    sentiment.loc[sentiment["Days_since_prev"] > 14, "Prev_sentiment"] = 0.0  # drop old sentiments
+    sentiment = sentiment.drop(columns=["Days_since_prev"])  # remove helper col
 
+    return sentiment
 
 
 if __name__ == "__main__":
     df = compute_sentiments()
    
     # Save 
-    output_path = f"data/processed/nyt_sentiments.csv"
+    output_path = "data/processed/nyt_sentiments.csv"
     df.to_csv(output_path, index=False)
 
     print(f"Saved sentiment file to: {output_path}")

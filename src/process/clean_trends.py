@@ -3,29 +3,29 @@ import pandas as pd
 def load_trends_csv(filepath: str) -> pd.DataFrame:
     df = pd.read_csv(filepath, parse_dates=['date'])
 
-    # Ensure 'date' column is datetime type
+    # Ensure date is datetime type
     df['date'] = pd.to_datetime(df['date'], errors='coerce')
     return df
 
 def clean_trends_data(df: pd.DataFrame) -> pd.DataFrame:
+    first_col = df.columns[0]
+    second_col = df.columns[1]
 
     # Convert ibm column to numeric
-    second_col = df.columns[1]
     df[second_col] = pd.to_numeric(df[second_col], errors='coerce')
 
     # Drop rows with empty values
     df = df.dropna()
 
-    # Rename first column to "Date"
-    first_col = df.columns[0]
-    df = df.rename(columns={first_col: "Date"})
+    # Rename columns 
+    df = df.rename(columns={first_col: "Date", second_col: "Interest"})
 
-    # Rename second column to "interest"
-    df = df.rename(columns={second_col: "Interest"})
+    # Ensure Sorted 
+    df = df.sort_values("Date")
 
-    # Normalize interest from -1 to 1
-    df['Interest'] = 2 * ((df['Interest'] - df['Interest'].min()) /
-                            (df['Interest'].max() - df['Interest'].min())) - 1
+    # Feature Engineering: Previous Interest 
+    df["Interest_lag"] = df["Interest"].shift(1)
+
 
     # Reset index for cleanliness
     df = df.reset_index(drop=True)

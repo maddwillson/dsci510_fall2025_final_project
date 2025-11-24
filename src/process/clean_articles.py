@@ -27,20 +27,17 @@ def clean_articles(data: list) -> pd.DataFrame:
     # Keep only useful columns
     df = df[['pub_date', 'headline_main']]
 
-    
-    # Remove articles missing any value
-    df = df.dropna()
 
 
     # Clean pub_date
     df['pub_date'] = pd.to_datetime(df['pub_date'], errors='coerce')
-    df = df.dropna(subset=['pub_date'])
     df['pub_date'] = df['pub_date'].dt.date
 
 
     # Rename columns
     df = df.rename(columns={"pub_date": "Date", 
                             "headline_main": "Headline"})
+
 
     df = df.reset_index(drop=True)
     return df
