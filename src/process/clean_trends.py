@@ -9,7 +9,7 @@ def load_trends_csv(filepath: str) -> pd.DataFrame:
 
 def clean_trends_data(df: pd.DataFrame) -> pd.DataFrame:
 
-    # Convert "IBM" column to numeric
+    # Convert ibm column to numeric
     second_col = df.columns[1]
     df[second_col] = pd.to_numeric(df[second_col], errors='coerce')
 
@@ -22,6 +22,10 @@ def clean_trends_data(df: pd.DataFrame) -> pd.DataFrame:
 
     # Rename second column to "interest"
     df = df.rename(columns={second_col: "Interest"})
+
+    # Normalize interest from -1 to 1
+    df['Interest_Norm'] = 2 * ((df['Interest'] - df['Interest'].min()) /
+                            (df['Interest'].max() - df['Interest'].min())) - 1
 
     # Reset index for cleanliness
     df = df.reset_index(drop=True)
