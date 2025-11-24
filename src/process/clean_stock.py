@@ -13,7 +13,7 @@ def load_stock_data_csv(filepath: str) -> pd.DataFrame:
     df.columns = [col.replace(' IBM', '') for col in df.columns]
 
     df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
-
+   
     df = df.dropna(subset=['Date'])
 
     # Normalize date
@@ -45,8 +45,8 @@ def clean_stock_data(df: pd.DataFrame) -> pd.DataFrame:
 
     # Feature engineering: Return Lag, average returns, Rolling Volatility, Day of Week
     df['Return_lag'] = df['Return'].shift(1) # previous day
-    df['Return_3d'] = df['Return'].rolling(window=3).mean().shift(1) # 3 day avg
-    df['Return_7d'] = df['Return'].rolling(window=7).mean().shift(1) # 7 day avg
+    df['Return_3d_sum'] = df['Return'].rolling(window=3).sum().shift(1)
+    df['Return_7d_sum'] = df['Return'].rolling(window=7).sum().shift(1)
     df['Volatility_3d'] = df['Return'].rolling(window=3).std() # 3 day voltility
     df['Volatility_7d'] = df['Return'].rolling(window=7).std() # 7 day voltility
     df['DayOfWeek'] = df['Date'].dt.day_name()

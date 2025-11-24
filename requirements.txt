@@ -7,3 +7,5 @@ json
 time
 pytrends
 vaderSentiment
+shap
+xgboost
