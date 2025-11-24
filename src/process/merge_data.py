@@ -52,9 +52,9 @@ def merge_data():
 
     # Save to ibm_df
     path = "data/final/ibm_df.csv"
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
     merged.to_csv(path, index=False)
     print(f"Saved merged dataset to {path}")
-
 
 if __name__ == "__main__":
     merge_data()

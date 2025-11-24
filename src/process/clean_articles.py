@@ -1,5 +1,6 @@
 import json
 import pandas as pd
+from pathlib import Path
 
 
 def load_articles_json(filepath: str) -> list:
@@ -46,6 +47,9 @@ def clean_articles(data: list) -> pd.DataFrame:
 if __name__ == '__main__':
     raw_path = 'data/raw/nyt_data.json'
     clean_path = 'data/processed/nyt_clean.csv'
+    
+    # Create output directory if it doesn't exist
+    Path(clean_path).parent.mkdir(parents=True, exist_ok=True)
 
     articles = load_articles_json(raw_path)
     df_clean = clean_articles(articles)

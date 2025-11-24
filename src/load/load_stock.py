@@ -55,8 +55,8 @@ if __name__ == "__main__":
     yf_df = load_yf_data(START_DATE, END_DATE)
 
     output_path = "./data/raw/yf_df.csv"
-    print(yf_df.head())
-    print(yf_df.columns)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
 
     # Save raw file
     yf_df.to_csv(output_path, index=False)

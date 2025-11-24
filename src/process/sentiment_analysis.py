@@ -1,6 +1,6 @@
 import pandas as pd
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-
+from pathlib import Path
 
 def compute_sentiments(nyt_clean_path="data/processed/nyt_clean.csv"):
     # Load data
@@ -25,11 +25,13 @@ def compute_sentiments(nyt_clean_path="data/processed/nyt_clean.csv"):
     return sentiment
 
 
+
 if __name__ == "__main__":
     df = compute_sentiments()
    
     # Save 
     output_path = "data/processed/nyt_sentiments.csv"
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(output_path, index=False)
 
     print(f"Saved sentiment file to: {output_path}")

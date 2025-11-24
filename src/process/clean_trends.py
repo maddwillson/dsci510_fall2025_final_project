@@ -1,4 +1,5 @@
 import pandas as pd
+from pathlib import Path
 
 def load_trends_csv(filepath: str) -> pd.DataFrame:
     df = pd.read_csv(filepath, parse_dates=['date'])
@@ -32,9 +33,13 @@ def clean_trends_data(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
+
 if __name__ == '__main__':
     raw_path = 'data/raw/google_df.csv'
     clean_path = 'data/processed/google_clean.csv'
+
+    # Create output directory if needed
+    Path(clean_path).parent.mkdir(parents=True, exist_ok=True)
 
     df_raw = load_trends_csv(raw_path)
     df_clean = clean_trends_data(df_raw)

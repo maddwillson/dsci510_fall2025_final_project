@@ -1,4 +1,6 @@
 import pandas as pd
+from pathlib import Path
+
 
 def load_stock_data_csv(filepath: str) -> pd.DataFrame:
     
@@ -60,6 +62,9 @@ def clean_stock_data(df: pd.DataFrame) -> pd.DataFrame:
 if __name__ == '__main__':
     raw_path = 'data/raw/yf_df.csv'
     clean_path = 'data/processed/yf_clean.csv'
+
+    # Ensure output directory exists
+    Path(clean_path).parent.mkdir(parents=True, exist_ok=True)
 
     df_raw = load_stock_data_csv(raw_path)
     df_clean = clean_stock_data(df_raw)

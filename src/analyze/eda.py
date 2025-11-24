@@ -12,6 +12,7 @@ plt.rcParams['figure.figsize'] = (12,6)
 # Get path
 data_path = Path(__file__).parent.parent.parent / "data/final/ibm_df.csv"  # relative to src/ folder
 results_path = Path(__file__).parent.parent.parent / "results"
+results_path.mkdir(parents=True, exist_ok=True)  # create if needed
 
 # Load data
 df = pd.read_csv(data_path, parse_dates=["Date"])
@@ -20,7 +21,6 @@ print("\nData Preview:\n", df.head(2))
 # Shape
 rows, cols = df.shape
 print(f"Dataset Shape: Rows={rows:,}, Columns={cols}")
-
 
 # Columns
 print(df.columns.tolist())
@@ -33,9 +33,12 @@ print("\nSummary Stats:\n",df.describe())
 
 
 
-# Distributions of variables 
-variables = ['Close', 'Volume', 'Return', 'Return_lag', 'Return_3d', 'Return_7d',
+
+variables = ['Close', 'Volume', 'Return', 'Return_lag', 'Return_3d_sum', 'Return_7d_sum',
              'Volatility_3d', 'Volatility_7d', 'Interest', 'Interest_lag', 'Sentiment', 'Prev_sentiment']
+
+
+# Distributions of variables 
 plt.figure(figsize=(20,15))
 for i, var in enumerate(variables, 1):
     plt.subplot(4,3,i)
@@ -48,11 +51,8 @@ plt.close()
 
 
 # Correlation heatmap
-numeric_vars = ['Return', 'Return_lag', 'Return_3d', 'Return_7d',
-                'Volatility_3d', 'Volatility_7d', 'Interest', 'Interest_lag', 
-                'Sentiment', 'Prev_sentiment']
 plt.figure(figsize=(10,8))
-sns.heatmap(df[numeric_vars].corr(), annot=True, cmap='coolwarm', vmin=-1, vmax=1)
+sns.heatmap(df[variables].corr(), annot=True, cmap='coolwarm', vmin=-1, vmax=1)
 plt.title("Correlation Heatmap")
 #plt.show()
 plt.savefig(results_path / "corr_heatmap.png")
@@ -86,9 +86,8 @@ plt.close()
 
 
 # Pairplot for relationships
-sns.pairplot(df[['Return', 'Return_lag', 'Return_3d', 'Return_7d', 'Volatility_7d', 
-                 'Interest', 'Interest_lag', 'Sentiment', 'Prev_sentiment']])
-#plt.show()
+sns.pairplot(df[['Return', 'Return_lag', 'Return_3d_sum', 'Return_7d_sum', 'Volatility_7d', 
+                 'Interest', 'Interest_lag', 'Sentiment', 'Prev_sentiment']])#plt.show()
 plt.savefig(results_path / "pairplot.png")
 plt.close()
 
@@ -107,7 +106,7 @@ df['Interest_scaled'] = scale_series(df['Interest'])
 df['Sentiment_scaled'] = scale_series(df['Sentiment'])
 
 # Time Series Plot
-df_to_plot = ['Return_scaled', 'Return_3d', 'Return_7d', 'Volatility_7d', 'Interest_scaled', 'Sentiment_scaled']
+df_to_plot = ['Return_7d_sum', 'Volatility_7d', 'Interest_scaled', 'Sentiment_scaled']
 plt.figure(figsize=(14,6))
 for col in df_to_plot:
     plt.plot(df['Date'], df.get(col, df[col]), label=col)

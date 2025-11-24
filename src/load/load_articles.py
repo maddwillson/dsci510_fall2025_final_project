@@ -19,6 +19,7 @@ from src.config import (
 
 #Set Up
 BASE_URL = "https://api.nytimes.com/svc/search/v2/articlesearch.json"
+
 QUERY = "IBM"  # can be any keyword
 
 def get_nyt_page(query, start_date, end_date, page):
@@ -103,6 +104,9 @@ if __name__ == "__main__":
 
     # save data
     output_path = Path("data/raw/nyt_data.json") 
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    
     with open(output_path, "w") as f:
         json.dump(articles, f, indent=2)
 
