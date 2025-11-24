@@ -25,9 +25,7 @@ def merge_data():
     google = load_csv("data/processed/google_clean.csv")
     nyt = load_csv("data/processed/nyt_sentiments.csv")
    
-    # Add article count
-    nyt["Article_Count"] = nyt.groupby("Date")["Sentiment"].transform("size")
-
+    
     # Find the overall date range
     start_date = max(
         yf["Date"].min(),
