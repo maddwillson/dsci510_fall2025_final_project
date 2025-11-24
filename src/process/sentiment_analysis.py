@@ -1,27 +1,19 @@
 import pandas as pd
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
-# Columns that need sentiment scores
-text_cols = ["Headline", "Abstract", "Snippet"]
 
 def compute_sentiments(nyt_clean_path=f"data/processed/nyt_clean.csv"):
     # Load data
     df = pd.read_csv(nyt_clean_path, parse_dates=["Date"])
     analyzer = SentimentIntensityAnalyzer()
 
-    # Helper for sentiment score
-    def get_compound(text):
-        if pd.isna(text):
-            return None
-        return analyzer.polarity_scores(str(text))["compound"]
-
-    # Sentiment Analysis for each column 
-    for col in text_cols:
-        df[col + "_Sentiment"] = df[col].apply(get_compound)
+    # Compute sentiment score
+    df["Sentiment"] = df["Headline"].apply(
+        lambda x: analyzer.polarity_scores(str(x))["compound"] if pd.notna(x) else None
+    )
     
-    
-    sentiment = df.groupby("Date")[[col + "_Sentiment" for col in text_cols]].mean().reset_index()
-
+    # Average for each day (for when multiple in a day)
+    sentiment = df.groupby("Date")[["Sentiment"]].mean().reset_index()
 
     return sentiment
 

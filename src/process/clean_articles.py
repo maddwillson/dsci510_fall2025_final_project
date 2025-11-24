@@ -25,7 +25,7 @@ def clean_articles(data: list) -> pd.DataFrame:
     )
 
     # Keep only useful columns
-    df = df[['pub_date', 'headline_main', 'abstract', 'snippet']]
+    df = df[['pub_date', 'headline_main']]
 
     
     # Remove articles missing any value
@@ -39,11 +39,8 @@ def clean_articles(data: list) -> pd.DataFrame:
 
 
     # Rename columns
-    df = df.rename(columns={"pub_date": "Date"})
-    df = df.rename(columns={"headline_main": "Headline"})
-    df = df.rename(columns={"abstract": "Abstract"})
-    df = df.rename(columns={"snippet": "Snippet"})
-
+    df = df.rename(columns={"pub_date": "Date", 
+                            "headline_main": "Headline"})
 
     df = df.reset_index(drop=True)
     return df
