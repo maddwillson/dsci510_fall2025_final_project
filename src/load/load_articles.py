@@ -79,11 +79,6 @@ def load_nyt_data(query, start_date, end_date, max_requests):
 
         docs.extend(page_docs)
 
-        #hits = meta.get("hits", 0)
-        # safety stop one page before hitting the limit
-        #if (page + 1) * 10 >= hits:
-        #    break
-
         sleep(NYT_RATE_LIMIT_SLEEP)
 
     return docs
