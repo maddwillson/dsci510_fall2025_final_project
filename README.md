@@ -16,7 +16,7 @@ Model performance was evaluated using accuracy, F1-scores, and confusion matrice
 # Installation
 I used an NYT Developer API key to access article data. It should be placed in an .env file similar to the provided .env.example. Please add your API key there to run the data loading pipeline on your own.
 
-Below are the main Python packages I used:
+Below are the required Python packages I used:
 
 yfinance — pull IBM stock data from Yahoo Finance
 pytrends — pull Google search interest data
@@ -38,4 +38,4 @@ vaderSentiment - Sentiment Analysis
 No need to change anything when runninging results.ipynb, eda.py or modeling.py files. Everything will be printed or added to a results folder. 
 
 # Run Instructions 
-The project should be run from the main Project directory. Within that, src/main.py will run the project and src/tests.py will run its tests. 
+The project should be run from the main project directory (DSCI510_FALL2025_FINAL PROJECT). Within that, run src/main.py first to run the project and then, run src/tests.py to run its tests. 

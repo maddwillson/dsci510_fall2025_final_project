@@ -4,13 +4,13 @@ from pathlib import Path
 
 from src.config import QUERY, START_DATE, END_DATE, NYT_DAILY_LIMIT
 
-from src.load.load_articles import load_nyt_data, load_articles_json
-from src.load.load_stock import load_yf_data, load_stock_data_csv
-from src.load.load_trends import load_google_data, load_trends_csv
+from src.load.load_articles import load_nyt_data
+from src.load.load_stock import load_yf_data
+from src.load.load_trends import load_google_data
 
-from src.process.clean_articles import clean_articles
-from src.process.clean_stock import clean_stock_data
-from src.process.clean_trends import clean_trends_data
+from src.process.clean_articles import clean_articles, load_articles_json
+from src.process.clean_stock import clean_stock_data, load_stock_data_csv
+from src.process.clean_trends import clean_trends_data, load_trends_csv
 from src.process.merge_data import merge_data
 from src.process.sentiment_analysis import compute_sentiments
 

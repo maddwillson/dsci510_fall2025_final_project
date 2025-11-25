@@ -69,5 +69,6 @@ if __name__ == '__main__':
     df_raw = load_stock_data_csv(raw_path)
     df_clean = clean_stock_data(df_raw)
 
+    # save
     df_clean.to_csv(clean_path, index=False)
     print(f"Cleaned stock data saved to {clean_path}")

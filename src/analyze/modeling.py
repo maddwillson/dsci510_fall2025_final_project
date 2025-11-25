@@ -17,20 +17,13 @@ from sklearn.metrics import (
 
 
 def modeling():
-
-    # Set Paths
-    results_path = Path(__file__).parent.parent.parent / "results"
-    results_path.mkdir(parents=True, exist_ok=True)  # create if needed
-
     data_path = Path(__file__).parent.parent.parent / "data/final/ibm_df.csv"
 
     # Load data
     df = pd.read_csv(data_path, parse_dates=["Date"])
 
-    # a return under threshold is labeled not up
+    # threshold for defining target
     threshold = 0.005
-
-    # define prediction variable
     df["Target"] = (df["Return"] > threshold).astype(int)
 
     # Only inlcude variables that are known that day 
@@ -74,24 +67,19 @@ def modeling():
     # Models to be tested
     models = {
         "Logistic Regression": LogisticRegression(
-            max_iter=1000, class_weight=class_weight_dict
-        ),
-
+            max_iter=1000, class_weight=class_weight_dict ),
         "Ridge Classifier": RidgeClassifier(),  
-        
         "Naive Bayes": GaussianNB(),
-        
         "KNN Classifier": KNeighborsClassifier(n_neighbors=5),
     }
 
 
 
-    model_names = []
-    f1_minority_scores = []
-    accuracy_scores = []
+    # performance storage
+    results = []
 
 
-    # Train deploy, & evaluate model
+    # train & evaluate
     for name, model in models.items():
         print(f"{name}:")
         
@@ -113,44 +101,60 @@ def modeling():
         print("Confusion Matrix:")
         print(confusion_matrix(y_test, y_pred))
 
-        model_names.append(name)
-        f1_minority_scores.append(f1_minority)
-        accuracy_scores.append(acc)
+        results.append({
+            "Model": name,
+            "F1_not_up": f1_minority,
+            "Accuracy": acc,
+        })
 
+    results_df = pd.DataFrame(results)
 
 
     # Bar plot of results
     fig, ax = plt.subplots(figsize=(10, 6))
     bar_width = 0.35
-    index = range(len(model_names))
-    bars1 = ax.bar(index, f1_minority_scores, bar_width, label='F1-score (Not Up)')
-    bars2 = ax.bar([i + bar_width for i in index], accuracy_scores, bar_width, label='Accuracy')
+    index = range(len(results_df))
 
-    ax.set_xlabel('Model')
-    ax.set_ylabel('Score')
-    ax.set_title('Binary Classification Results for IBM Stock Movements')
-    ax.set_xticks([i + bar_width / 2 for i in index])
-    ax.set_xticklabels(model_names)
-    ax.set_ylim(0, 1)
-    ax.legend()
+    ax.bar(index, results_df["F1_not_up"], bar_width, label="F1-score (Not Up)")
+    ax.bar(
+        [i + bar_width for i in index],
+        results_df["Accuracy"],
+        bar_width,
+        label="Accuracy"
+    )
 
-    # Annotate
-    for bars in [bars1, bars2]:
-        for bar in bars:
-            h = bar.get_height()
-            ax.annotate(
-                f'{h:.2f}', 
-                xy=(bar.get_x() + bar.get_width() / 2, h),
-                xytext=(0, 3),
-                textcoords="offset points",
-                ha='center', va='bottom'
-            )
+    # annotate bars
+    for i, row in results_df.iterrows():
+        ax.annotate(f"{row['F1_not_up']:.2f}",
+                    xy=(i, row['F1_not_up']),
+                    xytext=(0, 3),
+                    textcoords="offset points",
+                    ha="center", va="bottom")
+
+        ax.annotate(f"{row['Accuracy']:.2f}",
+                    xy=(i + bar_width, row['Accuracy']),
+                    xytext=(0, 3),
+                    textcoords="offset points",
+                    ha="center", va="bottom")
 
     plt.tight_layout()
-    plt.savefig(results_path / "classification_results.png")
-    plt.close()
+
+    # RETURN, don't save
+    return results_df, fig
+
 
 
 
 if __name__ == "__main__":
-    modeling()
+    results_path = Path(__file__).parent.parent.parent / "results"
+    results_path.mkdir(parents=True, exist_ok=True)
+
+    results_df, fig = modeling()
+
+    # save results
+    fig.savefig(results_path / "classification_results.png")
+    plt.close(fig)
+
+    results_df.to_csv(results_path / "classification_results.csv", index=False)
+
+    print("Modeling outputs saved to {results_path}.")

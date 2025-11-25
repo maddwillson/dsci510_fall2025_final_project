@@ -72,5 +72,6 @@ if __name__ == "__main__":
     output_path = PROJECT_ROOT / "data" / "raw" / "google_df.csv"
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
+    # save
     google_df.to_csv(output_path, index=True)
     print(f"Saved Google Trends data to: {output_path}")

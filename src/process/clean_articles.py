@@ -54,5 +54,6 @@ if __name__ == '__main__':
     articles = load_articles_json(raw_path)
     df_clean = clean_articles(articles)
 
+    #save
     df_clean.to_csv(clean_path, index=False)
     print(f"Cleaned NYT article data saved to {clean_path}")

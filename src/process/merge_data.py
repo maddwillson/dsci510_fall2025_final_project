@@ -50,12 +50,14 @@ def merge_data():
     # Drop days with NaN values
     merged = merged.dropna()
 
-    # Save to ibm_df
-    path = "data/final/ibm_df.csv"
-    Path(path).parent.mkdir(parents=True, exist_ok=True)
-    merged.to_csv(path, index=False)
-    print(f"Saved merged dataset to {path}")
+    return merged
 
 if __name__ == "__main__":
-    merge_data()
+    merged = merge_data()
     
+    path = "data/final/ibm_df.csv"
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    
+    # Save to ibm_df    
+    merged.to_csv(path, index=False)
+    print(f"Saved merged dataset to {path}")
