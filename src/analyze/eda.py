@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path
 
+from src.utils import save_fig
+
+
 # Plot settings
 sns.set(style="whitegrid", palette="muted")
 plt.rcParams['figure.figsize'] = (12, 6)
@@ -105,6 +108,7 @@ if __name__ == "__main__":
     # Save figures
     for name, fig in figs.items():
         save_path = results_path / f"{name}.png"
+        save_fig(fig, results_path / "corr_heatmap.png")
         fig.savefig(save_path)
         plt.close(fig)
 

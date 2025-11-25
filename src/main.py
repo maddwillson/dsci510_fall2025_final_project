@@ -17,6 +17,8 @@ from src.process.sentiment_analysis import compute_sentiments
 from analyze.eda import eda
 from analyze.modeling import modeling
 
+from src.utils import ensure_parent_dir
+
 
 def load():
     print("Starting data loading...")
@@ -29,7 +31,8 @@ def load():
         max_requests=NYT_DAILY_LIMIT,
     )
     nyt_raw_path = Path("data/raw/nyt_data.json")
-    nyt_raw_path.parent.mkdir(parents=True, exist_ok=True)
+    ensure_parent_dir(nyt_raw_path)
+
     with open(nyt_raw_path, "w") as f:
         json.dump(articles, f, indent=2)
     print(f"Saved NYT raw data to {nyt_raw_path}")
@@ -37,14 +40,14 @@ def load():
     # Load Yahoo Finance stock data
     yf_df = load_yf_data(START_DATE, END_DATE)
     yf_raw_path = Path("data/raw/yf_df.csv")
-    yf_raw_path.parent.mkdir(parents=True, exist_ok=True)
+    ensure_parent_dir(yf_raw_path)
     yf_df.to_csv(yf_raw_path, index=False)
     print(f"Saved YFinance raw data to {yf_raw_path}")
 
     # Load Google Trends data
     google_df = load_google_data(["IBM"], start_date=START_DATE, end_date=END_DATE, tz=360)
     google_raw_path = Path("data/raw/google_df.csv")
-    google_raw_path.parent.mkdir(parents=True, exist_ok=True)
+    ensure_parent_dir(google_raw_path)
     google_df.to_csv(google_raw_path, index=True)
     print(f"Saved Google Trends raw data to {google_raw_path}")
 
@@ -54,7 +57,7 @@ def clean():
     # Clean NYT Articles
     nyt_raw_path = Path("data/raw/nyt_data.json")
     nyt_clean_path = Path("data/processed/nyt_clean.csv")
-    nyt_clean_path.parent.mkdir(parents=True, exist_ok=True)
+    ensure_parent_dir(nyt_clean_path)
     articles = load_articles_json(nyt_raw_path)
     df_nyt_clean = clean_articles(articles)
     df_nyt_clean.to_csv(nyt_clean_path, index=False)
@@ -63,7 +66,7 @@ def clean():
     # Clean Yahoo Finance stock data
     yf_raw_path = Path("data/raw/yf_df.csv")
     yf_clean_path = Path("data/processed/yf_clean.csv")
-    yf_clean_path.parent.mkdir(parents=True, exist_ok=True)
+    ensure_parent_dir(yf_clean_path)
     df_yf_raw = load_stock_data_csv(yf_raw_path)
     df_yf_clean = clean_stock_data(df_yf_raw)
     df_yf_clean.to_csv(yf_clean_path, index=False)
@@ -72,7 +75,7 @@ def clean():
     # Clean Google Trends data
     google_raw_path = Path("data/raw/google_df.csv")
     google_clean_path = Path("data/processed/google_clean.csv")
-    google_clean_path.parent.mkdir(parents=True, exist_ok=True)
+    ensure_parent_dir(google_clean_path)
     df_google_raw = load_trends_csv(google_raw_path)
     df_google_clean = clean_trends_data(df_google_raw)
     df_google_clean.to_csv(google_clean_path, index=False)
@@ -83,7 +86,7 @@ def sentiment_analysis():
     print("\nRunning sentiment analysis...")
     df_sentiments = compute_sentiments()
     sentiment_path = Path("data/processed/nyt_sentiments.csv")
-    sentiment_path.parent.mkdir(parents=True, exist_ok=True)
+    ensure_parent_dir(sentiment_path)
     df_sentiments.to_csv(sentiment_path, index=False)
     print(f"Saved sentiment analysis results to {sentiment_path}")
 

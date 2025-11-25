@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 
 from src.config import START_DATE, END_DATE 
+from src.utils import ensure_parent_dir, save_csv
 
 
 # format config dates for google trends API
@@ -70,8 +71,9 @@ if __name__ == "__main__":
 
     PROJECT_ROOT = Path(__file__).resolve().parents[2]
     output_path = PROJECT_ROOT / "data" / "raw" / "google_df.csv"
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    ensure_parent_dir(output_path)
 
     # save
-    google_df.to_csv(output_path, index=True)
+    save_csv(google_df, output_path)
+
     print(f"Saved Google Trends data to: {output_path}")

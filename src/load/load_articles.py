@@ -7,6 +7,9 @@ import pandas as pd
 from pathlib import Path
 
 
+from src.utils import ensure_parent_dir
+
+
 from src.config import (
     NYT_API_KEY,
     NYT_DAILY_LIMIT,
@@ -103,7 +106,7 @@ if __name__ == "__main__":
 
     # save data
     output_path = Path("data/raw/nyt_data.json") 
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    ensure_parent_dir(output_path)
 
     
     with open(output_path, "w") as f:

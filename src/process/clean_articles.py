@@ -1,6 +1,7 @@
 import json
 import pandas as pd
 from pathlib import Path
+from src.utils import ensure_parent_dir, save_csv
 
 
 def load_articles_json(filepath: str) -> list:
@@ -49,11 +50,11 @@ if __name__ == '__main__':
     clean_path = 'data/processed/nyt_clean.csv'
     
     # Create output directory if it doesn't exist
-    Path(clean_path).parent.mkdir(parents=True, exist_ok=True)
+    ensure_parent_dir(clean_path)
 
     articles = load_articles_json(raw_path)
     df_clean = clean_articles(articles)
 
     #save
-    df_clean.to_csv(clean_path, index=False)
+    save_csv(df_clean, clean_path)
     print(f"Cleaned NYT article data saved to {clean_path}")

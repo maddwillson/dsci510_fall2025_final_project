@@ -6,6 +6,8 @@ from datetime import datetime
 
 from src.config import START_DATE, END_DATE
 
+from src.utils import ensure_parent_dir, save_csv
+
 def load_yf_data(start_date, end_date, ticker = "IBM"):
     try:
         # Convert config dates to YYYY-MM-DD strings for yfinance
@@ -53,10 +55,10 @@ if __name__ == "__main__":
     yf_df = load_yf_data(START_DATE, END_DATE)
 
     output_path = "./data/raw/yf_df.csv"
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    ensure_parent_dir(output_path)
 
 
     # Save raw file
-    yf_df.to_csv(output_path, index=False)
+    save_csv(yf_df, output_path)
     print(f"Saved YFINANCE Stock data to: {output_path}")
 

@@ -1,5 +1,6 @@
 import pandas as pd
 from pathlib import Path
+from src.utils import ensure_parent_dir, save_csv
 
 
 def load_csv(path):
@@ -56,8 +57,8 @@ if __name__ == "__main__":
     merged = merge_data()
     
     path = "data/final/ibm_df.csv"
-    Path(path).parent.mkdir(parents=True, exist_ok=True)
-    
+    ensure_parent_dir(path)
+
     # Save to ibm_df    
-    merged.to_csv(path, index=False)
+    save_csv(merged, path)
     print(f"Saved merged dataset to {path}")

@@ -14,6 +14,7 @@ from sklearn.metrics import (
     f1_score,
     accuracy_score
 )
+from src.utils import ensure_parent_dir
 
 
 def modeling():
@@ -147,7 +148,7 @@ def modeling():
 
 if __name__ == "__main__":
     results_path = Path(__file__).parent.parent.parent / "results"
-    results_path.mkdir(parents=True, exist_ok=True)
+    ensure_parent_dir(results_path)
 
     results_df, fig = modeling()
 
