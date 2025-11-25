@@ -1,19 +1,20 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from pathlib import Path
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression, RidgeClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.utils.class_weight import compute_class_weight
 from sklearn.metrics import (
     classification_report,
     confusion_matrix,
     f1_score,
     accuracy_score
 )
-from sklearn.utils.class_weight import compute_class_weight
-from pathlib import Path
+
 
 def modeling():
 

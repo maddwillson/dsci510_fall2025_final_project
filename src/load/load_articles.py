@@ -3,7 +3,6 @@
 import requests
 from time import sleep
 import json
-from datetime import datetime
 import pandas as pd
 from pathlib import Path
 

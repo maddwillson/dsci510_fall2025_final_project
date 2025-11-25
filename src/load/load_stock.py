@@ -3,8 +3,6 @@
 import yfinance as yf
 import pandas as pd
 from datetime import datetime
-from pathlib import Path
-
 
 from src.config import START_DATE, END_DATE
 
